@@ -136,9 +136,8 @@ public class ProtoGrpcServiceClass implements Serializable {
 
     /**
      * 获取newBlockingStub方法
-     * BusinessSummaryServiceGrpc.BusinessSummaryServiceBlockingStub serviceBlockingStub
-     *         = BusinessSummaryServiceGrpc.newBlockingStub(fapChannel);
-     * @return           newBlockingStub方法
+     HelloWorldServiceGrpc.HelloWorldServiceBlockingStub blockingStub
+     = HelloWorldServiceGrpc.newBlockingStub(channel);
      * @throws Exception
      */
     public Method getNewBlockingStubMethod() throws Exception{
