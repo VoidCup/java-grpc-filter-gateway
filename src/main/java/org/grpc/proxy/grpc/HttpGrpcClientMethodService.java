@@ -78,14 +78,9 @@ public class HttpGrpcClientMethodService implements Http2GrpcClientMethod{
         } else if (httpMethodInfo.getHttpMethod() == HttpMethod.PATCH) {
             // 使用PATCH方法和路径
         }
-        Method newBlockingStub = httpMethodInfo.getNewBlockingStub();
-        Method requestMessageBuilder = httpMethodInfo.getRequestMessageBuilder();
-        Method rpcMethod = httpMethodInfo.getRpcMethod();
-        Message.Builder builder = (Message.Builder)requestMessageBuilder.invoke((Object)null);
+        Message.Builder builder = httpMethodInfo.newBuilder();
         JsonFormat.parser().merge(requestWrapper.getHttpRequestBody(), builder);
-        Message requestMessage = builder.build();
-        Object blockingStub = newBlockingStub.invoke((Object)null, grpcServiceContext.getChannel());
-        Message responseMessage = (Message)rpcMethod.invoke(blockingStub, requestMessage);
+        Message responseMessage = httpMethodInfo.invokeRpc(grpcServiceContext.getChannel(), builder.build());
         String res = JsonFormat.printer().includingDefaultValueFields().omittingInsignificantWhitespace().print(responseMessage);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         ServletOutputStream outputStream = httpServletResponse.getOutputStream();

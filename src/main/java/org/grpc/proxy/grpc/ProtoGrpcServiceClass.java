@@ -266,6 +266,23 @@ public class ProtoGrpcServiceClass implements Serializable {
         private Method requestMessageBuilder;
         private Method rpcMethod;
 
+        public Message.Builder newBuilder() throws Exception{
+            return getMessageBuilder((Object) null);
+        }
+
+        public Message.Builder getMessageBuilder(Object target,Object... args) throws Exception{
+            return (Message.Builder)requestMessageBuilder.invoke(target,args);
+        }
+
+        public Object getBlockingStub(Object target, Object... args) throws Exception{
+            return newBlockingStub.invoke(target,args);
+        }
+
+        public Message invokeRpc(Channel channel,Message request) throws Exception{
+            Object blockingStub = getBlockingStub((Object) null, channel);
+            return (Message) rpcMethod.invoke(blockingStub, request);
+        }
+
         public String getPath() {
             return path;
         }
