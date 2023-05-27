@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.grpc.proxy";
+option java_outer_classname = "HelloWorldServiceProto";
+import "google/api/annotations.proto";
+
+// The greeting service definition.
+service HelloWorldService {
+    // Sends a greeting
+    rpc sayHello (HelloRequest) returns (HelloReply) {
+        option (google.api.http) = {
+            post: "/api/helloWorld"
+        };
+    }
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+    string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+    string message = 1;
+}

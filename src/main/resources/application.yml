@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: local-grpc-server
+
+grpc:
+  client:
+    localhost:
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      ##由于service是使用plaintext模式启动的，所以client也必须是此模式
+      ##否则会出现TSL问题
+      negotiationType: plaintext
+      address: static://127.0.0.1:9898
+  server:
+    port: 9898
+    basePackages:
+      - "org.grpc"
+      - "org.grpc.proxy"
+
