@@ -18,9 +18,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author dxh
@@ -61,12 +58,6 @@ public class HttpGrpcClientMethodService implements Http2GrpcClientMethod{
                            HttpServletResponse httpServletResponse,
                            ProtoGrpcServiceClass.HttpMethodInfo httpMethodInfo) throws Throwable{
         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(httpServletRequest);
-        Map<String, String> head = requestWrapper.getHead();
-        Map<String, List<String>> queryParam = requestWrapper.getQueryParam();
-//        Map<String, Object> jsonBody = requestWrapper.getJsonBody();
-        System.out.println(head);
-        System.out.println(queryParam);
-//        System.out.println(jsonBody);
         if (httpMethodInfo.getHttpMethod() == HttpMethod.GET) {
             // 使用GET方法和路径
         } else if (httpMethodInfo.getHttpMethod() == HttpMethod.PUT) {
