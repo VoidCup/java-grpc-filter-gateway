@@ -18,6 +18,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * @author dxh
@@ -58,6 +59,7 @@ public class HttpGrpcClientMethodService implements Http2GrpcClientMethod{
                            HttpServletResponse httpServletResponse,
                            ProtoGrpcServiceClass.HttpMethodInfo httpMethodInfo) throws Throwable{
         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(httpServletRequest);
+        Map<String, String> head = requestWrapper.getHead();
         if (httpMethodInfo.getHttpMethod() == HttpMethod.GET) {
             // 使用GET方法和路径
         } else if (httpMethodInfo.getHttpMethod() == HttpMethod.PUT) {
@@ -71,7 +73,8 @@ public class HttpGrpcClientMethodService implements Http2GrpcClientMethod{
         }
         Message.Builder builder = httpMethodInfo.newBuilder();
         JsonFormat.parser().merge(requestWrapper.getHttpRequestBody(), builder);
-        Message responseMessage = httpMethodInfo.invokeRpc(grpcServiceContext.getChannel(), builder.build());
+        Message responseMessage = httpMethodInfo
+                .invokeRpc(grpcServiceContext.getChannel(), builder.build(),head);
         String res = JsonFormat.printer().includingDefaultValueFields().omittingInsignificantWhitespace().print(responseMessage);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         ServletOutputStream outputStream = httpServletResponse.getOutputStream();

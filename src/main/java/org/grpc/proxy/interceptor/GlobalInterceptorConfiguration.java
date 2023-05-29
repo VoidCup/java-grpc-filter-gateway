@@ -17,6 +17,7 @@
 
 package org.grpc.proxy.interceptor;
 
+import net.devh.boot.grpc.client.interceptor.GrpcGlobalClientInterceptor;
 import net.devh.boot.grpc.server.interceptor.GrpcGlobalServerInterceptor;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,8 +25,13 @@ import org.springframework.context.annotation.Configuration;
 public class GlobalInterceptorConfiguration {
 
     @GrpcGlobalServerInterceptor
-    LogGrpcInterceptor logServerInterceptor() {
-        return new LogGrpcInterceptor();
+    public LogServiceGrpcInterceptor logServerInterceptor() {
+        return new LogServiceGrpcInterceptor();
+    }
+
+    @GrpcGlobalClientInterceptor
+    public LogClientGrpcInterceptor logClientInterceptor() {
+        return new LogClientGrpcInterceptor();
     }
 
 }

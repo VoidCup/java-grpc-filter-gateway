@@ -6,6 +6,8 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import io.grpc.Channel;
+import io.grpc.Metadata;
+import io.grpc.stub.AbstractStub;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.grpc.proxy.util.StringUtils;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author dxh
@@ -278,7 +281,13 @@ public class ProtoGrpcServiceClass implements Serializable {
             return newBlockingStub.invoke(target,args);
         }
 
-        public Message invokeRpc(Channel channel,Message request) throws Exception{
+        public Message invokeRpc(Channel channel, Message request, Map<String,String> metadata) throws Exception{
+            AbstractStub blockingStub = (AbstractStub) getBlockingStub((Object) null, channel);
+//            blockingStub = GrpcMetadataUtils.attachHeaders(blockingStub, metadata);
+            return (Message) rpcMethod.invoke(blockingStub, request);
+        }
+
+        public Message invokeRpc(Channel channel, Message request) throws Exception{
             Object blockingStub = getBlockingStub((Object) null, channel);
             return (Message) rpcMethod.invoke(blockingStub, request);
         }
