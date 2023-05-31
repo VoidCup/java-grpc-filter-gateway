@@ -2,10 +2,13 @@ package org.grpc.proxy.grpc;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import io.grpc.Channel;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.grpc.proxy.convert.HttpGetRequestConvertGrpcMessage;
+import org.grpc.proxy.convert.HttpMessageConvertGrpcMessage;
+import org.grpc.proxy.http.GrpcHttpRequestWrapper;
 import org.grpc.proxy.util.ClassPathScanningUtils;
+import org.grpc.proxy.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -16,7 +19,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author dxh
@@ -35,22 +37,22 @@ public class GrpcServiceContext implements InitializingBean {
     private List<String> basePackages = Lists.newArrayList();
     // exclude url
     private List<String> excludeUrls = Lists.newArrayList();
+    //convert packages
+    private List<String> convertPackages = Lists.newArrayList();
     @GrpcClient("localhost")
     private Channel channel;
 
     //key: option (google.api.http){post = "uri"} 中的uri
     //value: GrpcMethodInfo
-    private static final Map<String, ProtoGrpcServiceClass.HttpMethodInfo> grpcMethodApi = Maps.newHashMap();
+    private final Map<String, ProtoGrpcServiceClass.HttpMethodInfo> grpcMethodApi = Maps.newHashMap();
+
+    private final List<HttpGetRequestConvertGrpcMessage> httpConvertGrpc = Lists.newArrayList();
 
     @Override
     public void afterPropertiesSet() throws Exception {
         if (!CollectionUtils.isEmpty(basePackages)) {
-            Set<ProtoGrpcServiceClass> pbGrpcClassList = Sets.newHashSet();
-            for (String basePackage : basePackages) {
-                log.info("start scan package: {}", basePackage);
-                List<ProtoGrpcServiceClass> protoClasses = ClassPathScanningUtils.getAllServiceProtoClasses(basePackage);
-                pbGrpcClassList.addAll(protoClasses);
-            }
+            List<ProtoGrpcServiceClass> pbGrpcClassList
+                    = ClassPathScanningUtils.getAllServiceProtoClasses(basePackages.toArray(new String[0]));
             log.info("start parse protobuf Class size: {}", pbGrpcClassList.size());
             for (ProtoGrpcServiceClass pbGrpcClass : pbGrpcClassList) {
                 List<ProtoGrpcServiceClass.HttpMethodInfo> httpMethodInfoList = pbGrpcClass.parseGrpcHttpMethod();
@@ -63,6 +65,18 @@ public class GrpcServiceContext implements InitializingBean {
                 }
             }
         }
+        if(!CollectionUtils.isEmpty(getConvertPackages())){
+            httpConvertGrpc.addAll(ClassPathScanningUtils.getHttpConvertGrpcMsg(convertPackages.toArray(new String[0])));
+        }
+    }
+
+    public HttpGetRequestConvertGrpcMessage matchConvert(GrpcHttpRequestWrapper requestWrapper){
+        for (HttpGetRequestConvertGrpcMessage convertGrpcMessage : httpConvertGrpc) {
+            if(convertGrpcMessage.match(requestWrapper)){
+                return convertGrpcMessage;
+            }
+        }
+        return null;
     }
 
     public ProtoGrpcServiceClass.HttpMethodInfo getHttpMethodInfo(String path){
@@ -99,5 +113,13 @@ public class GrpcServiceContext implements InitializingBean {
 
     public void setChannel(Channel channel) {
         this.channel = channel;
+    }
+
+    public List<String> getConvertPackages() {
+        return convertPackages;
+    }
+
+    public void setConvertPackages(List<String> convertPackages) {
+        this.convertPackages = convertPackages;
     }
 }

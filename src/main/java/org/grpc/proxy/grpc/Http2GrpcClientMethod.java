@@ -1,8 +1,9 @@
 package org.grpc.proxy.grpc;
 
+import org.grpc.proxy.http.GrpcHttpRequestWrapper;
+import org.grpc.proxy.http.GrpcHttpResponseWrapper;
+
 import javax.servlet.FilterChain;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 /**
  * @author dxh
@@ -18,5 +19,5 @@ public interface Http2GrpcClientMethod {
      * @param chain         过滤器链
      * @throws Throwable    异常信息
      */
-    void invoke(ServletRequest request, ServletResponse response, FilterChain chain) throws Throwable;
+    void invoke(GrpcHttpRequestWrapper request, GrpcHttpResponseWrapper response, FilterChain chain) throws Throwable;
 }

@@ -13,6 +13,8 @@ grpc:
       address: static://127.0.0.1:9898
   server:
     port: 9898
+    convertPackages:
+      - "org.grpc.convert"
     basePackages:
       - "org.grpc"
       - "org.grpc.proxy"
