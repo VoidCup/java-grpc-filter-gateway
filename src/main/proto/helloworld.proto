@@ -4,23 +4,38 @@ option java_multiple_files = true;
 option java_package = "org.grpc.proxy";
 option java_outer_classname = "HelloWorldServiceProto";
 import "google/api/annotations.proto";
+import "httpDelete.proto";
+import "httpGet.proto";
+import "httpPatch.proto";
+import "httpPost.proto";
+import "httpPut.proto";
 
 // The greeting service definition.
 service HelloWorldService {
     // Sends a greeting
-    rpc sayHello (HelloRequest) returns (HelloReply) {
+    rpc getRequest (SimpleGetRequest) returns (SimpleGetReply) {
         option (google.api.http) = {
-            post: "/api/helloWorld"
+            get: "/api/get"
         };
     }
-}
-
-// The request message containing the user's name.
-message HelloRequest {
-    string name = 1;
-}
-
-// The response message containing the greetings
-message HelloReply {
-    string message = 1;
+    rpc postRequest (SimplePostRequest) returns (SimplePostReply) {
+        option (google.api.http) = {
+            post: "/api/post"
+        };
+    }
+    rpc putRequest (SimplePutRequest) returns (SimplePutReply) {
+        option (google.api.http) = {
+            post: "/api/put"
+        };
+    }
+    rpc deleteRequest (SimpleDeleteRequest) returns (SimpleDeleteReply) {
+        option (google.api.http) = {
+            post: "/api/delete"
+        };
+    }
+    rpc patchRequest (SimplePatchRequest) returns (SimplePatchReply) {
+        option (google.api.http) = {
+            post: "/api/patch"
+        };
+    }
 }

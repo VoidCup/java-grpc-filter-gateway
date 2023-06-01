@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.grpc.proxy";
+option java_outer_classname = "HttpPost";
+
+message SimplePostRequest{
+
+}
+
+message SimplePostReply{
+  int32 code = 1;
+  string message = 2;
+}
+

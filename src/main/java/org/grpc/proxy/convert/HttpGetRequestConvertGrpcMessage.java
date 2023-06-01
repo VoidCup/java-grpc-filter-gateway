@@ -1,5 +1,6 @@
 package org.grpc.proxy.convert;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.io.IOUtils;
@@ -8,6 +9,7 @@ import org.grpc.proxy.http.GrpcHttpResponseWrapper;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
 import javax.servlet.ServletOutputStream;
@@ -24,17 +26,21 @@ public class HttpGetRequestConvertGrpcMessage implements HttpMessageConvertGrpcM
 
     @Override
     public boolean match(GrpcHttpRequestWrapper requestWrapper) {
-        return false;
+        return HttpMethod.GET.matches(requestWrapper.getMethod());
     }
 
     @Override
     public void httpRequest2GrpcRequest(GrpcHttpRequestWrapper request,Message.Builder builder) throws Exception{
-        JsonFormat.parser().merge(request.getHttpRequestBody(), builder);
+        String parameter = JSONObject.toJSONString(request.getParameterMap());
+        JsonFormat.parser().ignoringUnknownFields().merge(parameter, builder);
     }
 
     @Override
     public void grpcResponse2HttpResponse(GrpcHttpResponseWrapper response, Message grpcResponse) throws Exception{
-        String res = JsonFormat.printer().includingDefaultValueFields().omittingInsignificantWhitespace().print(grpcResponse);
+        String res = JsonFormat.printer()
+                .includingDefaultValueFields()
+                .omittingInsignificantWhitespace()
+                .print(grpcResponse);
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         ServletOutputStream outputStream = response.getOutputStream();
         IOUtils.write(res,outputStream);

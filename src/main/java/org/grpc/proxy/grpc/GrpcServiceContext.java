@@ -5,10 +5,8 @@ import com.google.common.collect.Maps;
 import io.grpc.Channel;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.grpc.proxy.convert.HttpGetRequestConvertGrpcMessage;
-import org.grpc.proxy.convert.HttpMessageConvertGrpcMessage;
 import org.grpc.proxy.http.GrpcHttpRequestWrapper;
 import org.grpc.proxy.util.ClassPathScanningUtils;
-import org.grpc.proxy.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,19 +42,19 @@ public class GrpcServiceContext implements InitializingBean {
 
     //key: option (google.api.http){post = "uri"} 中的uri
     //value: GrpcMethodInfo
-    private final Map<String, ProtoGrpcServiceClass.HttpMethodInfo> grpcMethodApi = Maps.newHashMap();
+    private final Map<String, SingleProtoGrpcService.HttpMethodInfo> grpcMethodApi = Maps.newHashMap();
 
     private final List<HttpGetRequestConvertGrpcMessage> httpConvertGrpc = Lists.newArrayList();
 
     @Override
     public void afterPropertiesSet() throws Exception {
         if (!CollectionUtils.isEmpty(basePackages)) {
-            List<ProtoGrpcServiceClass> pbGrpcClassList
+            List<SingleProtoGrpcService> pbGrpcClassList
                     = ClassPathScanningUtils.getAllServiceProtoClasses(basePackages.toArray(new String[0]));
             log.info("start parse protobuf Class size: {}", pbGrpcClassList.size());
-            for (ProtoGrpcServiceClass pbGrpcClass : pbGrpcClassList) {
-                List<ProtoGrpcServiceClass.HttpMethodInfo> httpMethodInfoList = pbGrpcClass.parseGrpcHttpMethod();
-                for (ProtoGrpcServiceClass.HttpMethodInfo httpMethodInfo : httpMethodInfoList) {
+            for (SingleProtoGrpcService pbGrpcClass : pbGrpcClassList) {
+                List<SingleProtoGrpcService.HttpMethodInfo> httpMethodInfoList = pbGrpcClass.parseGrpcHttpMethod();
+                for (SingleProtoGrpcService.HttpMethodInfo httpMethodInfo : httpMethodInfoList) {
                     if (!excludeUrls.contains(httpMethodInfo.getPath())) {
                         log.info("register grpc service api, grpc service = {}, grpc api = {}, http-url = {}",
                                 pbGrpcClass.getServiceName(), httpMethodInfo.getMethodName(), httpMethodInfo.getPath());
@@ -79,7 +77,7 @@ public class GrpcServiceContext implements InitializingBean {
         return null;
     }
 
-    public ProtoGrpcServiceClass.HttpMethodInfo getHttpMethodInfo(String path){
+    public SingleProtoGrpcService.HttpMethodInfo getHttpMethodInfo(String path){
         return grpcMethodApi.get(path);
     }
 

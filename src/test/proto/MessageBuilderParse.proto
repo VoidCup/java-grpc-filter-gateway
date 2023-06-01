@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.grpc.proxy";
+option java_outer_classname = "MessageBuilderParse";
+import "google/api/annotations.proto";
+
+
+/**
+double	double
+float	float
+int32	int
+int64	long
+bool	boolean
+string	String
+bytes  ByteString
+ */
+message BaseDataTypeMessage{
+  string name = 1;
+  double money = 2;
+  float height = 3;
+  int32 age = 4;
+  int64 id = 5;
+  bytes img = 6;
+  Sex sex = 7;
+}
+
+enum Sex {
+  UN_KNOW = 0;
+  WOMAN = 1;
+  MAN = 2;
+}
+

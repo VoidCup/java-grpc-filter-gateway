@@ -22,8 +22,9 @@ import java.util.Map;
  * @version 1.0.0
  * @date 2023-05-25 23:23
  * @description： protobuf生成的服务文件的解析
+ * 单个proto无引入外部文件的proto service解析
  */
-public class ProtoGrpcServiceClass implements Serializable {
+public class SingleProtoGrpcService implements Serializable {
 
 
     //java_outer_className 输出的类文件后缀必须
@@ -53,8 +54,8 @@ public class ProtoGrpcServiceClass implements Serializable {
     private String serviceName;
     private String packageName;
 
-    public static ProtoGrpcServiceClass parseServiceProtoClass(Class<?>  serviceProtoClass) throws ClassNotFoundException {
-        ProtoGrpcServiceClass pbClass = new ProtoGrpcServiceClass();
+    public static SingleProtoGrpcService parseServiceProtoClass(Class<?>  serviceProtoClass) throws ClassNotFoundException {
+        SingleProtoGrpcService pbClass = new SingleProtoGrpcService();
         pbClass.setPackageName(serviceProtoClass.getPackage().getName());
         pbClass.setServiceProtoClass(serviceProtoClass);
         String simpleServiceName = serviceProtoClass.getSimpleName().replace(PROTO_SUFFIX,"");
@@ -124,7 +125,7 @@ public class ProtoGrpcServiceClass implements Serializable {
      */
     public Descriptors.FileDescriptor getFileDescriptor() throws Exception{
         return (Descriptors.FileDescriptor)getServiceProtoClass()
-                .getMethod(ProtoGrpcServiceClass.GET_DESCRIPTOR_METHOD).invoke((Object)null, (Object[])null);
+                .getMethod(SingleProtoGrpcService.GET_DESCRIPTOR_METHOD).invoke((Object)null, (Object[])null);
     }
 
     /**
@@ -143,7 +144,7 @@ public class ProtoGrpcServiceClass implements Serializable {
      * @throws Exception
      */
     public Method getNewBlockingStubMethod() throws Exception{
-        return getGrpcClass().getMethod(ProtoGrpcServiceClass.NEW_BLOCKING_STUB_METHOD, Channel.class);
+        return getGrpcClass().getMethod(SingleProtoGrpcService.NEW_BLOCKING_STUB_METHOD, Channel.class);
     }
 
     /**
@@ -245,9 +246,9 @@ public class ProtoGrpcServiceClass implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (!(o instanceof ProtoGrpcServiceClass)) return false;
+        if (!(o instanceof SingleProtoGrpcService)) return false;
 
-        ProtoGrpcServiceClass that = (ProtoGrpcServiceClass) o;
+        SingleProtoGrpcService that = (SingleProtoGrpcService) o;
 
         return new EqualsBuilder().append(getServiceProtoClass(), that.getServiceProtoClass()).append(getGrpcClass(), that.getGrpcClass()).isEquals();
     }

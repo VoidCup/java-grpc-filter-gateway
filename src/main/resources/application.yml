@@ -14,7 +14,7 @@ grpc:
   server:
     port: 9898
     convertPackages:
-      - "org.grpc.convert"
+      - "org.grpc.proxy.convert"
     basePackages:
       - "org.grpc"
       - "org.grpc.proxy"

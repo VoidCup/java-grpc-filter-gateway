@@ -3,19 +3,17 @@ package org.grpc.proxy.util;
 import com.google.common.collect.Lists;
 import org.grpc.proxy.convert.HttpGetRequestConvertGrpcMessage;
 import org.grpc.proxy.convert.HttpMessageConvertGrpcMessage;
-import org.grpc.proxy.grpc.ProtoGrpcServiceClass;
+import org.grpc.proxy.grpc.SingleProtoGrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author dxh
@@ -30,7 +28,7 @@ public class ClassPathScanningUtils {
 
     private static final TypeFilter ProtoServiceClassFilter = (metadataReader, metadataReaderFactory) -> {
         String className = metadataReader.getClassMetadata().getClassName();
-        return className.endsWith(ProtoGrpcServiceClass.PROTO_SERVICE_SUFFIX);
+        return className.endsWith(SingleProtoGrpcService.PROTO_SERVICE_SUFFIX);
     };
 
     public static List<HttpGetRequestConvertGrpcMessage> getHttpConvertGrpcMsg(String... packageNames){
@@ -78,15 +76,15 @@ public class ClassPathScanningUtils {
         return orderConvert;
     }
 
-    public static List<ProtoGrpcServiceClass> getAllServiceProtoClasses(String... packageNames) {
-        Set<ProtoGrpcServiceClass> serviceClasses = new HashSet<>();
+    public static List<SingleProtoGrpcService> getAllServiceProtoClasses(String... packageNames) {
+        Set<SingleProtoGrpcService> serviceClasses = new HashSet<>();
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
         provider.addIncludeFilter(ProtoServiceClassFilter);
         for (String packageName : packageNames) {
             for (BeanDefinition beanDefinition : provider.findCandidateComponents(packageName)) {
                 try {
                     Class<?> clazz = Class.forName(beanDefinition.getBeanClassName());
-                    ProtoGrpcServiceClass pbGrpcClassGroup = ProtoGrpcServiceClass.parseServiceProtoClass(clazz);
+                    SingleProtoGrpcService pbGrpcClassGroup = SingleProtoGrpcService.parseServiceProtoClass(clazz);
                     serviceClasses.add(pbGrpcClassGroup);
                 } catch (ClassNotFoundException e) {
                     // 处理类未找到的异常
@@ -98,8 +96,8 @@ public class ClassPathScanningUtils {
     }
 
     public static void main(String[] args) {
-        List<ProtoGrpcServiceClass> allServiceProtoClasses = getAllServiceProtoClasses("org.grpc");
-        for (ProtoGrpcServiceClass allServiceProtoClass : allServiceProtoClasses) {
+        List<SingleProtoGrpcService> allServiceProtoClasses = getAllServiceProtoClasses("org.grpc");
+        for (SingleProtoGrpcService allServiceProtoClass : allServiceProtoClasses) {
             System.out.println(allServiceProtoClass);
         }
     }

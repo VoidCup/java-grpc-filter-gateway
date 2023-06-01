@@ -28,7 +28,7 @@ public class HttpGrpcClientMethodService implements Http2GrpcClientMethod{
     public void invoke(GrpcHttpRequestWrapper request, GrpcHttpResponseWrapper response, FilterChain filterChain) throws Throwable {
         String uri = request.getRequestURI();
         String method = request.getMethod();
-        ProtoGrpcServiceClass.HttpMethodInfo httpMethodInfo = grpcServiceContext.getHttpMethodInfo(uri);
+        SingleProtoGrpcService.HttpMethodInfo httpMethodInfo = grpcServiceContext.getHttpMethodInfo(uri);
         //如果该restful-api无法转成grpcMethod那么直接放行
         if(httpMethodInfo == null){
             filterChain.doFilter(request,response);
