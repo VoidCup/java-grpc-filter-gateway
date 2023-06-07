@@ -1,6 +1,7 @@
 package org.grpc.proxy.service;
 
 
+import com.google.common.collect.Lists;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import io.grpc.Channel;
@@ -25,14 +26,21 @@ public class HelloWorldGrpcService extends HelloWorldServiceGrpc.HelloWorldServi
     public void getRequest(SimpleGetRequest request, StreamObserver<SimpleGetReply> responseObserver) {
         SimpleGetReply.Builder replyBuilder = SimpleGetReply.newBuilder();
         try {
-            String res = JsonFormat.printer()
-                    .includingDefaultValueFields()
-                    .omittingInsignificantWhitespace()
-                    .print(request);
-            JsonFormat.parser().ignoringUnknownFields().merge(res, replyBuilder);
+            UserDto.Builder userBuilder = UserDto.newBuilder();
+            userBuilder.setName("dxh");
+            userBuilder.setAge(1);
+            userBuilder.setHeight(1.11);
+            userBuilder.setId(122434234L);
+            userBuilder.setIdCard("dfadfadfadfadfadfa");
+            userBuilder.addAllTags(Lists.newArrayList("t1","t2","t3"));
+            replyBuilder.setRequest(request);
+            replyBuilder.setTotal(1);
+            replyBuilder.setPages(1);
+            replyBuilder.setCurrentPage(1);
+            replyBuilder.addUsers(userBuilder);
             replyBuilder.setCode(HttpStatus.OK.value());
             replyBuilder.setMessage(HttpStatus.OK.name());
-        } catch (InvalidProtocolBufferException e) {
+        } catch (Exception e) {
             replyBuilder.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             replyBuilder.setMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
             throw new RuntimeException(e);

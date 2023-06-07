@@ -6,6 +6,8 @@ import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.io.IOUtils;
 import org.grpc.proxy.http.GrpcHttpRequestWrapper;
 import org.grpc.proxy.http.GrpcHttpResponseWrapper;
+import org.grpc.proxy.requestparam.QueryParamHandle;
+import org.grpc.proxy.requestparam.XwwwFormUrlencodedHandle;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -31,8 +33,8 @@ public class HttpGetRequestConvertGrpcMessage implements HttpMessageConvertGrpcM
 
     @Override
     public void httpRequest2GrpcRequest(GrpcHttpRequestWrapper request,Message.Builder builder) throws Exception{
-        String parameter = JSONObject.toJSONString(request.getParameterMap());
-        JsonFormat.parser().ignoringUnknownFields().merge(parameter, builder);
+        QueryParamHandle.parse(request,builder);
+        XwwwFormUrlencodedHandle.parse(request,builder);
     }
 
     @Override

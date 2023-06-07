@@ -3,12 +3,25 @@ syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "org.grpc.proxy";
 option java_outer_classname = "HttpGet";
+import "User.proto";
 
 message SimpleGetRequest{
-
+  string name = 1;
+  int32 age = 2;
+  repeated string other = 3;
+  string xFormUrl1 = 4;
+  int64 xFormUrl2 = 5;
+  string xFormUrl3 = 6;
 }
 
 message SimpleGetReply{
   int32 code = 1;
   string message = 2;
+  int64 total = 3;
+  int64 pages = 4;
+  int64 currentPage = 5;
+  repeated UserDto users = 6;
+  SimpleGetRequest request = 7;
 }
+
+
