@@ -1,13 +1,13 @@
 package org.grpc.proxy.convert;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.io.IOUtils;
 import org.grpc.proxy.http.GrpcHttpRequestWrapper;
 import org.grpc.proxy.http.GrpcHttpResponseWrapper;
-import org.grpc.proxy.requestparam.QueryParamHandle;
-import org.grpc.proxy.requestparam.XwwwFormUrlencodedHandle;
+import org.grpc.proxy.requestparam.ApplicationJsonParse;
+import org.grpc.proxy.requestparam.QueryParamParse;
+import org.grpc.proxy.requestparam.XwwwFormUrlencodedParse;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -33,8 +33,9 @@ public class HttpGetRequestConvertGrpcMessage implements HttpMessageConvertGrpcM
 
     @Override
     public void httpRequest2GrpcRequest(GrpcHttpRequestWrapper request,Message.Builder builder) throws Exception{
-        QueryParamHandle.parse(request,builder);
-        XwwwFormUrlencodedHandle.parse(request,builder);
+        QueryParamParse.parse(request,builder);
+        XwwwFormUrlencodedParse.parse(request,builder);
+        ApplicationJsonParse.parse(request,builder);
     }
 
     @Override

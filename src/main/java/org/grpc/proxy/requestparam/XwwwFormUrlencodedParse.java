@@ -19,8 +19,8 @@ import java.util.Map;
  * Content-Type: application/x-www-form-urlencoded
  * 上述请求内容处理方式
  */
-public class XwwwFormUrlencodedHandle {
-    private static final Logger log = LoggerFactory.getLogger(XwwwFormUrlencodedHandle.class);
+public class XwwwFormUrlencodedParse {
+    private static final Logger log = LoggerFactory.getLogger(XwwwFormUrlencodedParse.class);
     public static void parse(GrpcHttpRequestWrapper request, Message.Builder builder) throws Exception{
         String contentType = request.getContentType();
         if(MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(contentType)){

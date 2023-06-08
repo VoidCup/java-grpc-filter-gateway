@@ -13,7 +13,7 @@ import org.grpc.proxy.http.GrpcHttpRequestWrapper;
  * ?a=b&b=c&c=d&d=e的处理方式
  */
 
-public class QueryParamHandle {
+public class QueryParamParse {
     public static void parse(GrpcHttpRequestWrapper request, Message.Builder builder) throws Exception{
         String parameter = JSONObject.toJSONString(request.getParameterMap());
         JsonFormat.parser().ignoringUnknownFields().merge(parameter, builder);
