@@ -2,16 +2,15 @@ package org.grpc.proxy.service;
 
 
 import com.google.common.collect.Lists;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
-import io.grpc.Channel;
+import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
+import org.apache.commons.io.FileUtils;
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.grpc.proxy.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import javax.annotation.Resource;
+import java.io.File;
 
 /**
  * @author dxh
@@ -53,7 +52,23 @@ public class HelloWorldGrpcService extends HelloWorldServiceGrpc.HelloWorldServi
 
     @Override
     public void postRequest(SimplePostRequest request, StreamObserver<SimplePostReply> responseObserver) {
-        super.postRequest(request, responseObserver);
+        SimplePostReply.Builder replyBuilder = SimplePostReply.newBuilder();
+        try {
+            ByteString file = request.getFile();
+            String name = request.getName() + request.getAge();
+            FileUtils.writeByteArrayToFile(new File("/Users/xinhuadeng/JavaProject/grpc-filter-gateway/src/main/resources/"+name+".txt"),
+                    file.toByteArray());
+            replyBuilder.setCode(HttpStatus.OK.value());
+            replyBuilder.setMessage(HttpStatus.OK.name());
+        } catch (Exception e) {
+            replyBuilder.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            replyBuilder.setMessage(HttpStatus.INTERNAL_SERVER_ERROR.name());
+            throw new RuntimeException(e);
+        }
+        finally {
+            responseObserver.onNext(replyBuilder.build());
+            responseObserver.onCompleted();
+        }
     }
 
     @Override

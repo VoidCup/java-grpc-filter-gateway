@@ -1,5 +1,6 @@
 package org.gprc.proxy.service.protobean;
 
+import com.google.protobuf.ByteString;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,4 +20,5 @@ public class BaseDataTypeMessageBean implements Serializable {
     private Long id;
     private String img;
     private String sex;
+    private byte[] file;
 }

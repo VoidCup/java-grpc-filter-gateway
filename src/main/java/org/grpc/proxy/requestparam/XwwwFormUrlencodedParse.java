@@ -20,13 +20,9 @@ import java.util.Map;
  * 上述请求内容处理方式
  */
 public class XwwwFormUrlencodedParse {
-    private static final Logger log = LoggerFactory.getLogger(XwwwFormUrlencodedParse.class);
     public static void parse(GrpcHttpRequestWrapper request, Message.Builder builder) throws Exception{
-        String contentType = request.getContentType();
-        if(MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(contentType)){
-            String requestBody = request.getHttpRequestBody();
-            Map<String, String> stringMap = StringUtils.splitAndEq(requestBody);
-            JsonFormat.parser().ignoringUnknownFields().merge(JSONObject.toJSONString(stringMap), builder);
-        }
+        String requestBody = request.getHttpRequestBody();
+        Map<String, String> stringMap = StringUtils.splitAndEq(requestBody);
+        JsonFormat.parser().ignoringUnknownFields().merge(JSONObject.toJSONString(stringMap), builder);
     }
 }

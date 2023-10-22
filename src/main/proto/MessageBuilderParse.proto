@@ -4,6 +4,7 @@ option java_multiple_files = true;
 option java_package = "org.grpc.proxy";
 option java_outer_classname = "MessageBuilderParse";
 import "google/api/annotations.proto";
+import "httpGet.proto";
 
 
 /**
@@ -23,7 +24,21 @@ message BaseDataTypeMessage{
   int64 id = 5;
   bytes img = 6;
   Sex sex = 7;
+  bytes file = 8;
+  M2 m2 = 9;
+  SimpleGetRequest req = 10;
+  repeated string a2 = 11;
+  repeated int64  a3 = 12;
+  repeated M2 a4 = 13;
+  repeated Sex a5 = 14;
+  repeated bytes a6 = 15;
 }
+
+message M2{
+  string n2 = 1;
+  string id2 = 2;
+}
+
 
 enum Sex {
   UN_KNOW = 0;

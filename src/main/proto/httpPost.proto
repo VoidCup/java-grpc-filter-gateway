@@ -5,7 +5,9 @@ option java_package = "org.grpc.proxy";
 option java_outer_classname = "HttpPost";
 
 message SimplePostRequest{
-
+  string name = 5;
+  int32  age = 6;
+  bytes file = 7;
 }
 
 message SimplePostReply{
