@@ -6,7 +6,6 @@ import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.apache.commons.io.FileUtils;
-import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.grpc.proxy.*;
 import org.springframework.http.HttpStatus;
 
